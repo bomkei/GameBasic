@@ -10,8 +10,10 @@ INCLDIR	= include
 SRCDIR	= src \
 	src/Wrapper \
 	src/WrapperImpl
+RESDIR	= res
 
 COMMONFLAGS	= -O2 -DUNICODE
+RCFLAGS			= $(INCLUDE) -c 65001
 CFLAGS			= $(INCLUDE) $(COMMONFLAGS)
 CXXFLAGS		= $(CFLAGS) -std=c++20
 LDFLAGS			= -Wl,--gc-sections -mwindows -municode
@@ -24,15 +26,23 @@ LDFLAGS			= -Wl,--gc-sections -mwindows -municode
 	@echo $(notdir $<)
 	@$(CXX) -MP -MMD -MF $*.d $(CXXFLAGS) -c -o $@ $<
 
+%.o: %.rc
+	@echo $(notdir $<)
+	@windres $(RCFLAGS) $< $@
+
 ifneq ($(notdir $(CURDIR)), $(BUILD))
 
 CFILES		= $(notdir $(foreach dir,$(SRCDIR),$(wildcard $(dir)/*.c)))
 CXXFILES	= $(notdir $(foreach dir,$(SRCDIR),$(wildcard $(dir)/*.cc)))
+RCFILES		= $(notdir $(foreach dir,$(RESDIR),$(wildcard $(dir)/*.rc)))
 
 export OUTPUT		= $(TOPDIR)/$(TARGET)
-export OFILES		= $(CFILES:.c=.o) $(CXXFILES:.cc=.o)
+export OFILES		= $(CFILES:.c=.o) $(CXXFILES:.cc=.o) $(RCFILES:.rc=.o)
 export INCLUDE	= $(foreach dir,$(INCLDIR),-I$(TOPDIR)/$(dir))
-export VPATH		= $(foreach dir,$(SRCDIR),$(TOPDIR)/$(dir))
+
+export VPATH		= \
+	$(foreach dir,$(SRCDIR),$(TOPDIR)/$(dir)) \
+	$(foreach dir,$(RESDIR),$(TOPDIR)/$(dir))
 
 .PHONY: $(BUILD) all clean re
 

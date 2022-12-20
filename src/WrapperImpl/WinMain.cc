@@ -19,7 +19,7 @@ int APIENTRY wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR lpCmdLine,
     .cbClsExtra = 0,
     .cbWndExtra = 0,
     .hInstance = hInst,
-    .hIcon = LoadIcon(nullptr, IDI_APPLICATION),
+    .hIcon = LoadIcon(hInst, L"MAINWINDOW_ICON"),
     .hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH),
     .lpszMenuName = nullptr,
     .lpszClassName = g_class_name

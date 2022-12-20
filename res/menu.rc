@@ -1,0 +1,21 @@
+#include "resource.h"
+
+MAIN_WINDOW_MENU MENU {
+  POPUP "ファイル (&F)" {
+    MENUITEM "開く (&O)", MENUID_FILE_OPEN
+    MENUITEM "上書き保存", MENUID_FILE_SAVE
+    MENUITEM "保存", MENUID_FILE_SAVE_AS_NEW
+
+    MENUITEM SEPARATOR
+
+    MENUITEM "設定", MENUID_FILE_OPTIONS
+  }
+
+  POPUP "エディタ (&E)" {
+    MENUITEM "新規", 1400
+  }
+
+  POPUP "コンソール" {
+    MENUITEM "新規", 1500
+  }
+}
