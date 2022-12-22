@@ -2,14 +2,20 @@
 #include <vector>
 #include "Wrapper/CWindow.h"
 
+#include <codecvt>
+#include <locale>
+
 static constexpr auto g_class_name = TEXT("GAME_BASIC");
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 
 int Main(std::vector<std::wstring> const& args);
 
-int APIENTRY wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR lpCmdLine,
-                   int nCmdShow) {
+int APIENTRY wWinMain(
+  HINSTANCE hInst,
+  HINSTANCE hPrevInst,
+  LPWSTR lpCmdLine,
+  int nCmdShow) {
 
   auto& winc = CWindow::GetWindowClass();
 
@@ -45,5 +51,22 @@ int APIENTRY wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR lpCmdLine,
     arg += ch;
   }
 
-  return Main(args);
+  try {
+    return Main(args);
+  }
+  catch( std::exception e ) {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
+      conv;
+
+    std::wstring msg =
+      conv.from_bytes(e.what());
+
+    MessageBox(nullptr, msg.c_str(), L"exception", MB_OK);
+  }
+  catch( ... ) {
+    MessageBox(nullptr, L"unhandled exception", L"exception", MB_OK);
+  }
+
+  PostQuitMessage(0);
+  return -1;
 }

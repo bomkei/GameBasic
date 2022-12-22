@@ -1,7 +1,9 @@
 #include <Windows.h>
 #include <vector>
+#include "Exceptions.h"
 #include "Wrapper/CWindow.h"
 #include "MainWindow.h"
+#include "CodeEditor.h"
 #include "resource.h"
 
 // メインウィンドウ ビットマップのサイズ
@@ -13,7 +15,11 @@ MainWindow::MainWindow(std::wstring const& title, int width, int height)
   : CWindow(title, width, height),
     hBitmap(nullptr),
     hBuffer(nullptr),
-    hMenu(nullptr)
+    hMenu(nullptr),
+    menuInfo({ }),
+    currentWindowtype(WT_Editor),
+    current_code_editor_index(0),
+    code_editor_list({ CodeEditor() })
 {
 }
 
@@ -98,6 +104,41 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM l
     case WM_PAINT: {
       auto hdc = BeginPaint(hwnd, &ps);
 
+      WINDOWINFO windowInfo;
+
+      GetWindowInfo(hwnd, &windowInfo);
+
+      int window_width =
+        windowInfo.rcClient.right - windowInfo.rcClient.left;
+
+      int window_height =
+        windowInfo.rcClient.bottom - windowInfo.rcClient.top;
+
+      switch( this->currentWindowtype ) {
+        case WT_Editor: {
+          auto const& editor = this->GetCurrentCodeEditor();
+
+          int len = window_width / editor.GetFontSize().first;
+          int line = window_height / editor.GetFontSize().second;
+
+          editor.Draw(
+            this->hBuffer, len, line
+          );
+
+
+          break;
+        }
+
+        case WT_Interpreter: {
+
+          break;
+        }
+
+        default: {
+          throw NotImplementedError();
+        }
+      }
+
       BitBlt(
         hdc,
         0, 0, mainWindow_bitmap_width, mainWindow_bitmap_height,
@@ -114,4 +155,7 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM l
   return 0;
 }
 
-
+CodeEditor& MainWindow::GetCurrentCodeEditor() {
+  return
+    this->code_editor_list[this->current_code_editor_index];
+}
