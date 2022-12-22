@@ -1,20 +1,17 @@
 #pragma once
 
-#include <string>
-
-
 namespace basic {
 
 struct Object {
-public:
-
+  Type type;
+  size_t ref_count;
 
   virtual ~Object();
 
-  std::string to_string() const;
+  virtual std::string to_string() const = 0;
 
 protected:
-
+  Object(Type&& type);
 };
 
 } // namespace basic

@@ -7,7 +7,7 @@ LD			= $(CXX)
 TOPDIR	?= $(CURDIR)
 BUILD		= build
 
-SCRIPTDIR	= basic
+SCRIPTDIR	= $(TOPDIR)/basic
 TESTDIR		= $(TOPDIR)/test
 
 INCLDIR	= include \
@@ -53,14 +53,16 @@ export VPATH		= \
 
 .PHONY: $(BUILD) all clean re basic test
 
-all: $(BUILD)
+all: basic $(BUILD)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(TOPDIR)/Makefile
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 
 clean:
-	@rm -rf $(TARGET) $(BUILD)
+	@rm -rf $(TARGET) $(BUILD) \
+		$(SCRIPTDIR)/$(BUILD) $(TESTDIR)/$(BUILD) \
+		$(SCRIPTDIR)/script.dll $(TESTDIR)/test.exe
 
 re: clean all
 

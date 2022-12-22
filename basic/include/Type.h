@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace basic {
 
 enum TypeKind {
@@ -13,7 +15,15 @@ enum TypeKind {
 
 struct Type {
   TypeKind kind;
-  
+
+  size_t arr_depth;
+  bool is_ref;
+  bool is_mut;
+
+  Type(TypeKind kind = TYPE_None);
+
+  std::string to_string() const;
+  bool equals(Type const& type) const;
 };
 
 } // namespace basic
