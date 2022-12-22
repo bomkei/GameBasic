@@ -22,6 +22,10 @@ public:
 
 private:
 
+  // スクロール
+  int scroll_x;
+  int scroll_y;
+
   // カーソル位置
   int cursor_x;
   int cursor_y;
@@ -30,7 +34,7 @@ private:
   int font_width;
   int font_height;
 
-  std::vector<std::string> source;
+  std::vector<std::wstring> source;
 
 };
 

@@ -6,10 +6,17 @@ LD			= $(CXX)
 
 TOPDIR	?= $(CURDIR)
 BUILD		= build
-INCLDIR	= include
+
+SCRIPTDIR	= basic
+TESTDIR		= $(TOPDIR)/test
+
+INCLDIR	= include \
+	basic/include
+
 SRCDIR	= src \
 	src/Wrapper \
 	src/WrapperImpl
+
 RESDIR	= res
 
 COMMONFLAGS	= -O2 -DUNICODE
@@ -44,7 +51,7 @@ export VPATH		= \
 	$(foreach dir,$(SRCDIR),$(TOPDIR)/$(dir)) \
 	$(foreach dir,$(RESDIR),$(TOPDIR)/$(dir))
 
-.PHONY: $(BUILD) all clean re
+.PHONY: $(BUILD) all clean re basic test
 
 all: $(BUILD)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(TOPDIR)/Makefile
@@ -56,6 +63,14 @@ clean:
 	@rm -rf $(TARGET) $(BUILD)
 
 re: clean all
+
+basic:
+	@$(MAKE) --no-print-directory -C $(SCRIPTDIR) -f $(SCRIPTDIR)/Makefile
+
+test:
+	@$(MAKE) --no-print-directory -C $(TESTDIR) -f $(TESTDIR)/Makefile
+	@echo ==============================================
+	@$(TESTDIR)/test.exe
 
 else
 
